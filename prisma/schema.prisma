@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id               String    @id @default(cuid())
+  name             String
+  abbreviation     String?
+  conference       String?
+  division         String?   @default("D1")
+  rpiRank          Int?
+  rpiRating        Float?
+  teamPitchingPlus Float?
+  teamHittingPlus  Float?
+  logoUrl          String?
+  scheduleUrl      String?
+  rosterUrl        String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  players         Player[]
+  homeGames       Game[]          @relation("HomeTeam")
+  awayGames       Game[]          @relation("AwayTeam")
+  scheduleEntries ScheduleEntry[]
+}
+
+model Player {
+  id           String     @id @default(cuid())
+  firstName    String
+  lastName     String
+  team         Team       @relation(fields: [teamId], references: [id])
+  teamId       String
+  position     String
+  playerType   PlayerType
+  classYear    String?
+  bats         String?
+  throws       String?
+  height       String?
+  weight       Int?
+  hometown     String?
+
+  pitchingPlus Float?
+  hittingPlus  Float?
+  stuffPlus    Float?
+  locationPlus Float?
+
+  seasonStats     SeasonStats[]
+  pitcherMatchups PitcherMatchup[] @relation("PitcherInMatchup")
+  hitterMatchups  PitcherMatchup[] @relation("HitterInMatchup")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([teamId])
+  @@index([playerType])
+}
+
+enum PlayerType {
+  PITCHER
+  HITTER
+  TWO_WAY
+}
+
+model SeasonStats {
+  id             String @id @default(cuid())
+  player         Player @relation(fields: [playerId], references: [id])
+  playerId       String
+  season         Int
+
+  gamesPlayed    Int?
+  gamesStarted   Int?
+
+  // Pitcher stats
+  wins           Int?
+  losses         Int?
+  era            Float?
+  inningsPitched Float?
+  strikeouts     Int?
+  walks          Int?
+  hitsAllowed    Int?
+  earnedRuns     Int?
+  strikePercent  Float?
+  bbPercent      Float?
+  kPercent       Float?
+  oppBattingAvg  Float?
+  whip           Float?
+  kPerNine       Float?
+  bbPerNine      Float?
+
+  // Hitter stats
+  atBats         Int?
+  hits           Int?
+  doubles        Int?
+  triples        Int?
+  homeRuns       Int?
+  rbi            Int?
+  runs           Int?
+  stolenBases    Int?
+  battingAvg     Float?
+  obp            Float?
+  slg            Float?
+  ops            Float?
+  kRateHitting   Float?
+  bbRateHitting  Float?
+  babip          Float?
+  isoSlg         Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([playerId, season])
+  @@index([playerId])
+}
+
+model Game {
+  id                String     @id @default(cuid())
+  date              DateTime
+  homeTeam          Team       @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  homeTeamId        String
+  awayTeam          Team       @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  awayTeamId        String
+  homeScore         Int?
+  awayScore         Int?
+  status            GameStatus @default(SCHEDULED)
+
+  homeWinProb       Float?
+  awayWinProb       Float?
+  projectedHomeRuns Float?
+  projectedAwayRuns Float?
+
+  matchups PitcherMatchup[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([homeTeamId])
+  @@index([awayTeamId])
+  @@index([date])
+}
+
+enum GameStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  POSTPONED
+}
+
+model PitcherMatchup {
+  id          String @id @default(cuid())
+  game        Game   @relation(fields: [gameId], references: [id])
+  gameId      String
+  pitcher     Player @relation("PitcherInMatchup", fields: [pitcherId], references: [id])
+  pitcherId   String
+  hitter      Player @relation("HitterInMatchup", fields: [hitterId], references: [id])
+  hitterId    String
+
+  projectedBA Float?
+  projectedK  Float?
+  projectedBB Float?
+  projectedHR Float?
+  advantage   String?
+
+  createdAt DateTime @default(now())
+
+  @@index([gameId])
+  @@index([pitcherId])
+  @@index([hitterId])
+}
+
+model ScheduleEntry {
+  id           String   @id @default(cuid())
+  team         Team     @relation(fields: [teamId], references: [id])
+  teamId       String
+  date         DateTime
+  opponentName String
+  isHome       Boolean
+  result       String?
+  gameId       String?
+
+  createdAt DateTime @default(now())
+
+  @@index([teamId])
+  @@index([date])
+}
+
+model RpiRanking {
+  id               String   @id @default(cuid())
+  teamName         String
+  rank             Int
+  rating           Float
+  record           String?
+  conferenceRecord String?
+  scrapedAt        DateTime @default(now())
+  season           Int
+
+  @@index([season])
+  @@index([rank])
+}
+
+model AgentRun {
+  id             String      @id @default(cuid())
+  agentName      String
+  status         AgentStatus @default(PENDING)
+  startedAt      DateTime?
+  completedAt    DateTime?
+  itemsProcessed Int         @default(0)
+  errors         String[]
+  metadata       Json?
+
+  @@index([agentName])
+  @@index([status])
+}
+
+enum AgentStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
