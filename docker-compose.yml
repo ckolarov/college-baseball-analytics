@@ -53,6 +53,41 @@ services:
     volumes:
       - redisdata:/data
 
+  nifi:
+    image: apache/nifi:1.28.1
+    container_name: cba-nifi
+    ports:
+      - "8443:8443"
+    environment:
+      - NIFI_WEB_HTTPS_PORT=8443
+      - SINGLE_USER_CREDENTIALS_USERNAME=admin
+      - SINGLE_USER_CREDENTIALS_PASSWORD=CollegeBaseball2026!
+      - NIFI_JVM_HEAP_INIT=1g
+      - NIFI_JVM_HEAP_MAX=2g
+    volumes:
+      - nifi-data:/opt/nifi/nifi-current/data
+      - nifi-logs:/opt/nifi/nifi-current/logs
+      - ./nifi/scripts:/opt/nifi/nifi-current/custom-scripts:ro
+      - ./nifi/drivers:/opt/nifi/nifi-current/extra-drivers:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nifi-registry:
+    image: apache/nifi-registry:1.28.1
+    container_name: cba-nifi-registry
+    ports:
+      - "18080:18080"
+    volumes:
+      - nifi-registry-data:/opt/nifi-registry/nifi-registry-current/database
+      - nifi-registry-flow:/opt/nifi-registry/nifi-registry-current/flow_storage
+    depends_on:
+      - nifi
+
 volumes:
   pgdata:
   redisdata:
+  nifi-data:
+  nifi-logs:
+  nifi-registry-data:
+  nifi-registry-flow:
