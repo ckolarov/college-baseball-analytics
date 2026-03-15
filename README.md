@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# College Baseball Analytics Platform
+
+A full-stack college baseball analytics application focused on player evaluation, team comparison, and predictive performance modeling.
+
+## Core Rating Systems
+
+- **Pitching+** — 100 = Division I average pitcher performance
+- **Hitting+** — 100 = Division I average hitter performance
+
+Every player receives an individual rating, and every team has aggregate Pitching+ and Hitting+ scores. Compare player vs. player and team vs. team across all D1 programs.
+
+## Features
+
+- **Player Dashboards** — Year-by-year stats, career splits, Pitching+/Hitting+ ratings with component breakdowns
+- **Team Pages** — Aggregate ratings, full rosters, schedule projections
+- **Comparative Analytics** — Team vs. team and player vs. player side-by-side comparisons
+- **Matchup Modeling** — Pitcher-vs-hitter projected outcomes for upcoming games
+- **Game Projections** — Win probabilities and expected outcomes for every scheduled game
+- **Session Playback** — Filter and step through player performance over time
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 14+, TypeScript, Tailwind CSS, Recharts, shadcn/ui |
+| Backend | Next.js API Routes, Prisma ORM |
+| Database | PostgreSQL |
+| Cache/Queue | Redis, BullMQ |
+| Agents | 6 specialized data collection and analysis agents |
+| Deployment | Vercel or Docker Compose |
+
+## Multi-Agent Architecture
+
+1. **Data Collection Agent** — Scrapes public college baseball stats
+2. **Player Summary Agent** — Cleans data, builds structured profiles
+3. **RPI Agent** — Retrieves current team RPI rankings
+4. **Schedule + Projection Agent** — Calculates game win probabilities
+5. **Matchup Modeling Agent** — Projects pitcher-vs-hitter outcomes
+6. **Rating Engine Agent** — Calculates Pitching+, Hitting+, and team composites
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
+- Node.js 20+
+- PostgreSQL 16+
+- Redis 7+
+
+### Local Development
+
+\`\`\`bash
+npm install
+cp .env.example .env
+npx prisma migrate dev
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+\`\`\`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Docker
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+\`\`\`bash
+docker compose up -d
+\`\`\`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Vercel
 
-## Learn More
+Connect the repo to Vercel, add environment variables (DATABASE_URL via Neon, REDIS_URL via Upstash), and deploy.
 
-To learn more about Next.js, take a look at the following resources:
+## Future Enhancements
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Stuff+** and **Location+** ratings (pending TrackMan API access)
+- Real-time game scoring
+- Conference tournament projections
+- Mobile app
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Private — All rights reserved.
