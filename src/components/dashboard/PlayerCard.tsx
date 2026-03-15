@@ -36,30 +36,30 @@ export function PlayerCard({
   return (
     <Link
       href={href}
-      className="flex items-center gap-4 rounded-lg border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10"
+      className="glass-card flex items-center gap-4 p-3 transition"
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-lg font-bold text-zinc-300">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-pink-500/20 to-cyan-400/20 text-sm font-bold text-zinc-300">
         {firstName[0]}
         {lastName[0]}
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="font-semibold text-white truncate">
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-semibold text-white">
           {firstName} {lastName}
         </div>
-        <div className="flex items-center gap-2 text-sm text-zinc-400">
+        <div className="flex items-center gap-1.5 text-xs text-zinc-500">
           <span>{position}</span>
-          {classYear && (
+          {classYear ? (
             <>
-              <span className="text-zinc-600">·</span>
+              <span className="text-zinc-700">·</span>
               <span>{classYear}</span>
             </>
-          )}
-          {teamName && (
+          ) : null}
+          {teamName ? (
             <>
-              <span className="text-zinc-600">·</span>
+              <span className="text-zinc-700">·</span>
               <span className="truncate">{teamName}</span>
             </>
-          )}
+          ) : null}
         </div>
       </div>
       <div className="flex gap-2">

@@ -10,7 +10,7 @@ export default function SchedulePage() {
   const { data: teams } = useTeams();
   const { data: schedule, isLoading } = useSchedule(teamId);
 
-  const teamList = (teams as Record<string, unknown>[]) ?? [];
+  const teamList = ((teams as Record<string, unknown>)?.data as Record<string, unknown>[]) ?? [];
   const entries = (schedule?.data as Record<string, unknown>[]) ?? [];
 
   return (

@@ -25,9 +25,9 @@ export default function TeamsPage() {
             <div key={i} className="h-16 animate-pulse rounded-lg border border-white/10 bg-white/5" />
           ))}
         </div>
-      ) : (data as Record<string, unknown>[])?.length > 0 ? (
+      ) : ((data as Record<string, unknown>)?.data as Record<string, unknown>[])?.length > 0 ? (
         <div className="space-y-2">
-          {(data as Record<string, unknown>[]).map((t: Record<string, unknown>) => (
+          {((data as Record<string, unknown>).data as Record<string, unknown>[]).map((t: Record<string, unknown>) => (
             <Link
               key={t.id as string}
               href={`/teams/${t.id}`}

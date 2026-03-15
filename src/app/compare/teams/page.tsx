@@ -12,7 +12,7 @@ export default function CompareTeamsPage() {
   const { data: teams } = useTeams();
   const { data: comparison, isLoading } = useTeamComparison(team1Id, team2Id);
 
-  const teamList = (teams as Record<string, unknown>[]) ?? [];
+  const teamList = ((teams as Record<string, unknown>)?.data as Record<string, unknown>[]) ?? [];
 
   return (
     <div className="space-y-6">

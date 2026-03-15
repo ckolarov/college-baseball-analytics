@@ -10,7 +10,7 @@ export default function MatchupsPage() {
   const { data: teams } = useTeams();
   const { data: projections, isLoading } = useProjections(teamId);
 
-  const teamList = (teams as Record<string, unknown>[]) ?? [];
+  const teamList = ((teams as Record<string, unknown>)?.data as Record<string, unknown>[]) ?? [];
 
   return (
     <div className="space-y-6">

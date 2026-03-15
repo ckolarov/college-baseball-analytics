@@ -3,6 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import {
+  LayoutGrid,
+  Users,
+  Target,
+  Zap,
+  Shield,
+  Columns2,
+  GitCompare,
+  Crosshair,
+  Calendar,
+  Activity,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: "grid" },
@@ -16,34 +29,41 @@ const navItems = [
   { href: "/schedule", label: "Schedule", icon: "calendar" },
 ];
 
-const iconMap: Record<string, string> = {
-  grid: "⊞",
-  users: "👥",
-  target: "🎯",
-  zap: "⚡",
-  shield: "🛡",
-  columns: "⟺",
-  "git-compare": "⇄",
-  crosshair: "◎",
-  calendar: "📅",
+const iconMap: Record<string, LucideIcon> = {
+  grid: LayoutGrid,
+  users: Users,
+  target: Target,
+  zap: Zap,
+  shield: Shield,
+  columns: Columns2,
+  "git-compare": GitCompare,
+  crosshair: Crosshair,
+  calendar: Calendar,
 };
 
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-60 border-r border-white/10 bg-[#0d1b2a]">
-      <div className="flex h-14 items-center border-b border-white/10 px-4">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-lg font-bold text-white">⚾ CBA</span>
-          <span className="text-xs text-zinc-400">Analytics</span>
+    <aside className="fixed left-0 top-0 z-40 h-screen w-60 border-r border-white/[0.06] bg-[#0d1b2a]">
+      <div className="flex h-14 items-center border-b border-white/[0.06] px-4">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500/20 to-cyan-400/20">
+            <Activity className="h-4 w-4 text-cyan-400" />
+          </div>
+          <div>
+            <span className="gradient-text text-sm font-bold">CBA</span>
+            <span className="ml-1 text-xs text-zinc-500">Analytics</span>
+          </div>
         </Link>
       </div>
-      <nav className="mt-4 flex flex-col gap-1 px-2">
+      <nav className="mt-4 flex flex-col gap-0.5 px-2">
         {navItems.map((item) => {
           const isActive =
             pathname === item.href ||
             (item.href !== "/" && pathname.startsWith(item.href));
+
+          const Icon = iconMap[item.icon];
 
           return (
             <Link
@@ -52,13 +72,18 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
                 isActive
-                  ? "bg-white/10 text-white font-medium"
-                  : "text-zinc-400 hover:bg-white/5 hover:text-white",
+                  ? "border-l-2 border-cyan-400 bg-white/[0.06] font-medium text-white"
+                  : "border-l-2 border-transparent text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200",
               )}
             >
-              <span className="w-5 text-center text-xs">
-                {iconMap[item.icon] || "•"}
-              </span>
+              {Icon && (
+                <Icon
+                  className={cn(
+                    "h-4 w-4",
+                    isActive ? "text-cyan-400" : "text-zinc-500",
+                  )}
+                />
+              )}
               {item.label}
             </Link>
           );
